@@ -16,8 +16,10 @@ int main(){
         return -1;
     }
 
+    std::cout << "Created Socket" << std::endl;
+
     // create address
-    sockaddr_in address;
+    struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_port = htons(PORT);
     //address.sin_addr.s_addr = INADDR_ANY;
@@ -27,10 +29,12 @@ int main(){
         return -2;
     }
 
-    while(true){
+    std::cout << "Connected to server" << std::endl;
+
+    //while(true){
         read(server, message, 1024);
         std::cout << message << std::endl;
-    }
+    //}
 
     close(server);
 

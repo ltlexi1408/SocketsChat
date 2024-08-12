@@ -10,7 +10,7 @@
 int main(){
     //creat socket
     int server, new_socket;
-    char message[1024];
+    char message[1024] = "hello world";
 
     if((server = socket(AF_INET, SOCK_STREAM, 0)) == 0){
         std::cout << "Socket creation failed" << std::endl;
@@ -20,7 +20,7 @@ int main(){
     std::cout << "Created Socket" << std::endl;
 
     // create address
-    sockaddr_in address;
+    struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_port = htons(PORT);
     address.sin_addr.s_addr = INADDR_ANY;
@@ -43,18 +43,18 @@ int main(){
 
     //
     int addlen = sizeof(address);
-    if(new_socket = accept(server, (struct sockaddr*)&address, (socklen_t*)&addlen)< 0){
+    if(new_socket = accept(server, (struct sockaddr*)&address, (socklen_t*)&addlen) < 0){
         std::cout << "Failed to accept connection" << std::endl;
         return -4;
     }
 
     std::cout << "Accepted connection" << std::endl;
 
-    while(strcmp(message, "q") != 0){
-        std::cin >> message;
+    //while(strcmp(message, "q") != 0){
+        //std::cin >> message;
         std::cout << "message: " << message << std::endl;
         send(new_socket, message, strlen(message), 0);
-    }
+    //}
 
 
     close(new_socket);
