@@ -22,7 +22,7 @@ int main(){
     struct sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_port = htons(PORT);
-    //address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_addr.s_addr = INADDR_ANY;
 
     if(connect(server, (struct sockaddr*)&address, sizeof(address)) < 0){
         std::cout << "Failed to connect" << std::endl;
@@ -31,10 +31,10 @@ int main(){
 
     std::cout << "Connected to server" << std::endl;
 
-    //while(true){
+    while(true){
         read(server, message, 1024);
         std::cout << message << std::endl;
-    //}
+    }
 
     close(server);
 

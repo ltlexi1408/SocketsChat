@@ -50,11 +50,11 @@ int main(){
 
     std::cout << "Accepted connection" << std::endl;
 
-    //while(strcmp(message, "q") != 0){
-        //std::cin >> message;
+    while(strcmp(message, "q") != 0){
+        std::cin >> message;
         std::cout << "message: " << message << std::endl;
         send(new_socket, message, strlen(message), 0);
-    //}
+    }
 
 
     close(new_socket);
