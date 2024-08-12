@@ -5,15 +5,17 @@
 #include <string>
 #include <cstring>
 
-#define PORT 8000
+#include <cerrno>
+
+#define PORT 8080
 
 int main(){
     //creat socket
     int server, new_socket;
     char message[1024] = "hello world";
 
-    if((server = socket(AF_INET, SOCK_STREAM, 0)) == 0){
-        std::cout << "Socket creation failed" << std::endl;
+    if((server = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+        std::cerr << "Socket creation failed" << strerror(errno) << std::endl;
         return -1;
     }
 
@@ -27,7 +29,7 @@ int main(){
 
     //binds socket
     if(bind(server, (struct sockaddr*)&address, sizeof(address)) < 0){
-        std::cout << "Binding Socket failed" << std::endl;
+        std::cerr << "Binding Socket failed" << strerror(errno) << std::endl;
         return -2;
     }
 
@@ -35,27 +37,32 @@ int main(){
 
     // starts listening for traffic
     if(listen(server, 5) < 0){
-        std::cout << "Failed to listen on Socket" << std::endl;
+        std::cerr << "Failed to listen on Socket" << strerror(errno) << std::endl;
         return -3;
     }
 
     std::cout << "Listening on socket" << std::endl;
 
     //
-    int addlen = sizeof(address);
-    if(new_socket = accept(server, (struct sockaddr*)&address, (socklen_t*)&addlen) < 0){
-        std::cout << "Failed to accept connection" << std::endl;
+    socklen_t addlen = sizeof(address);
+    new_socket = accept(server, (struct sockaddr*)&address, &addlen);
+
+    if(new_socket < 0){
+         std::cerr << "Failed to accept connection: " << strerror(errno) << std::endl;
         return -4;
     }
 
     std::cout << "Accepted connection" << std::endl;
 
     while(strcmp(message, "q") != 0){
+        memset(message, 0, sizeof(message));
         std::cin >> message;
         std::cout << "message: " << message << std::endl;
-        send(new_socket, message, strlen(message), 0);
+        if(send(new_socket, message, strlen(message), 0) < 0){
+            std::cerr << "Failed to send message" << strerror(errno) << std::endl;
+            return -5;
+        }
     }
-
 
     close(new_socket);
     close(server);
